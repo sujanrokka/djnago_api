@@ -14,12 +14,16 @@ def list_recipe(request):
     if request.method=='POST':
         print(request.data)
         recipe_serializer=RecipeSerializer(data=request.data)
-        recipe=RecipeSerializer.create(request.data)
-        print(recipe)
-        return Response({
-            'data':"CREATED"
+        
+        if recipe_serializer.is_valid():
+            recipe_serializer.save()
+        
+        
+       
+            # serialized_data=RecipeSerializer(recipe_serializer)
+            return Response(recipe_serializer.data)
             
-        })
+    
     else:
         recipes=Recipe.objects.all()
         serializer=RecipeSerializer(recipes,many=True)
