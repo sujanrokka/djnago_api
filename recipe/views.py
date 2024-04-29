@@ -6,6 +6,8 @@ from .models import Recipe,Product
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+
+
 class RecipeViewSet(ModelViewSet):
     queryset=Recipe.objects.all()
     serializer_class=RecipeSerializer
@@ -14,7 +16,7 @@ class RecipeViewSet(ModelViewSet):
 
 class ProductViewSet(ModelViewSet):
     queryset=Product.objects.all()
-    serializer_class=ProductSerializer
+    serializer_class=ProductSerializer 
 
 
 
@@ -26,8 +28,7 @@ class ProductViewSet(ModelViewSet):
 
 
 
-
-
+# we can do this way also
 @api_view()
 def hello(request):
     return Response({"data": "Hello, world!"})
@@ -49,6 +50,7 @@ def list_recipe(request):
     serializer=RecipeSerializer(recipes,many=True)
     return Response(serializer.data,status=201)
 
+
 @api_view(['GET','DELETE','PUT'])
 def recipe_detail(request,id):
     try:
@@ -62,6 +64,7 @@ def recipe_detail(request,id):
         return Response(recipe_serializer.data)
     
     
+    
     elif request.method=="PUT":
         #  recipe=Recipe.objects.get(id=id)
          recipe_serializer=RecipeSerializer(recipe,data=request.data)
@@ -72,11 +75,13 @@ def recipe_detail(request,id):
             print(recipe_serializer.errors)
             return Response(recipe_serializer.errors)
          
+         
     
     elif request.method=='DELETE':
         #  recipe=Recipe.objects.get(id=id)
          recipe.delete()
          return Response(status=204)
+  
   
   
   
@@ -97,6 +102,7 @@ def list_product(request):
     products=Product.objects.all()
     serializer=ProductSerializer(products,many=True)
     return Response(serializer.data,status=201)
+
 
         
 @api_view(['GET','DELETE','PUT'])
@@ -120,7 +126,6 @@ def product_detail(request,id):
          else:
             print( product_serializer.errors)
             return Response(product_serializer.errors)
-         
     
     elif request.method=='DELETE':
          products=Product.objects.get(id=id)
