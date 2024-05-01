@@ -3,6 +3,7 @@ from recipe import views
 from rest_framework.routers import DefaultRouter
 
 
+
 router = DefaultRouter()
 router.register('recipeviewset',views.RecipeViewSet,basename='recipeviewset')
 router.register('productviewset',views.ProductViewSet,basename='products')
@@ -18,5 +19,6 @@ urlpatterns = [
     path('api/',include(router.urls)),
     path('recipe_c/',views.RecipeListView.as_view()),
     path('recipe_c/<int:id>/',views.RecipeDetailView.as_view()),
-    # path('recipe_c/<int:id>/',views.RecipeUpdateView.as_view()),
+   
+   
 ]
