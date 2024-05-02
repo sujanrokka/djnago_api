@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'recipe',
     'rest_framework',
     'rest_framework.authtoken',
+    'Course',
 ]
 
 MIDDLEWARE = [

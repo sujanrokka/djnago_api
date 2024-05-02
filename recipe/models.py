@@ -8,7 +8,8 @@ class Recipe(models.Model):
     time_required=models.CharField(max_length=23)
     difficulty=models.CharField(max_length=20,null=True)
     rating=models.IntegerField(default=0,null=True)
-    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    updated_by=models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name="updated_by")
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name="created_by")
     
     def __str__(self):
         return self.title
