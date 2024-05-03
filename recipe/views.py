@@ -10,7 +10,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 
 
-
+#------------------------------------------
 class RecipeViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated]
     queryset=Recipe.objects.all()
@@ -21,7 +21,8 @@ class ProductViewSet(ModelViewSet):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer 
     
-    
+#-----------------------------------------------------------------------------------------------------------------
+  
 class RecipeListView(APIView):
     permission_classes=[IsAuthenticated]
     def get(self,request):
