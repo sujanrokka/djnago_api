@@ -81,6 +81,7 @@ class DisplayStudent(APIView):
 class StudentListAPIView(ListAPIView):
     # queryset=Student.objects.all()
     queryset=Student.objects.select_related('course') #this is for query optimization
+    #many to many field ma prefetch_related query use garne and for foreign key use select_related in forward relation
     serializer_class=StudentSerializer
     pagination_class=LargeResultsSetPagination
     
