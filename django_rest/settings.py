@@ -40,9 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'recipe',
+    'Course',
+    
+    
+    
+    #3rd party for debug
+    "debug_toolbar",
     'rest_framework',
     'rest_framework.authtoken',
-    'Course',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +58,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+]
+
+#for deubg toolbar
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
 ]
 
 ROOT_URLCONF = 'django_rest.urls'
@@ -145,3 +158,8 @@ MEDIA_ROOT = 'mediafiles'
 
 # URL used to access the media
 MEDIA_URL = '/media/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}

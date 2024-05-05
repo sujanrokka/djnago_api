@@ -3,6 +3,9 @@ from .serializers import CourseSerializer,CourseDetailSerializer,SubjectSerializ
 from .models import Course,Subject,Student
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView #this is genric view for pagination
+from rest_framework import generics
+from .pagination import LargeResultsSetPagination
 
 
 class CourseListView(APIView):
@@ -58,6 +61,7 @@ class SubjectListView(APIView):
         return Response(course_serializer.data,status=201)  
     
     
+#this is for getting students from course
 class DisplayStudent(APIView):
    def get(self,request,*args,**kwargs):
         id=kwargs.get('id')
@@ -73,6 +77,12 @@ class DisplayStudent(APIView):
         
     
     
+#this is for pagination
+class StudentListAPIView(ListAPIView):
+    # queryset=Student.objects.all()
+    queryset=Student.objects.select_related('course') #this is for query optimization
+    serializer_class=StudentSerializer
+    pagination_class=LargeResultsSetPagination
     
     
     

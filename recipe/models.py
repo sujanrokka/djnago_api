@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
+class Ingredient(models.Model):
+    name=models.CharField(max_length=23)
+    def __str__(self):
+        return self.name
 class Recipe(models.Model):
     title=models.CharField(max_length=23)
     description=models.TextField()
@@ -10,9 +14,11 @@ class Recipe(models.Model):
     rating=models.IntegerField(default=0,null=True)
     updated_by=models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name="updated_by")
     user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,related_name="created_by")
+    ingredients=models.ManyToManyField(Ingredient)
     
     def __str__(self):
         return self.title
+
 
 
 class Product(models.Model):
