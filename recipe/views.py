@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from .serializers import RecipeSerializer,ProductSerializer,RecipeListSerializer,RecipeCreateSerializer
 from rest_framework.decorators import api_view,permission_classes,authentication_classes
@@ -9,8 +10,29 @@ from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 
+#-------------------------------------------------------------------------------------------------for mail
+from django.conf import settings
+from django.core.mail import send_mail
 
-#------------------------------------------
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+def mail_user(request):
+    subject = 'welcome to GFG world'
+    message = 'Hi  thank you for registering in geeksforgeeks.'
+    html_message="<h1> welcome to our website</h1> <p>You have logged in from <strong>{ip_address} </strong> </p> <a href=\"google.com\" style=\"text-decoration:none; padding:10px; background-color:cyan;\">Visit </a>"
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = ['tiwarianimika2000@gmail.com']
+    send_mail( subject, message,html_message=html_message,recipient_list=recipient_list,from_email=email_from )
+    return HttpResponse()
+
+
+#------------------------------------------------------------------------------------------------------------
 class RecipeViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated]
     queryset=Recipe.objects.all()

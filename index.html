@@ -1,0 +1,87 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        #student-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        li {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+        }
+
+        img {
+            width: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Student List</h1>
+    <ul id="student-list">
+        <!-- Student data will be dynamically inserted here -->
+    </ul>
+
+    <script>
+         
+    
+        const token="937b11e4e951237f5b955c804f7aef356727e0a3"
+        document.addEventListener("DOMContentLoaded", function(){
+       
+            fetch('http://127.0.0.1:8000/students_p/',{ headers:{"Authorization":"Token "+token}})
+                .then(response => response.json())
+                .then(data => {
+                    // Process the fetched data and generate HTML
+                    const studentList = document.getElementById('student-list');
+                    data.results.forEach(student => {
+                        const listItem = document.createElement('li');
+
+                        // Create image element
+                        const img = document.createElement('img');
+                        img.src = student.image;
+                        img.alt = student.name;
+
+                        // Create text node for student details
+                        const textNode = document.createTextNode(`Name: ${student.name}, Course: ${student.course}`);
+
+                        // Append image and text node to list item
+                        listItem.appendChild(img);
+                        listItem.appendChild(textNode);
+
+                        // Append list item to student list
+                        studentList.appendChild(listItem);
+                    });
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        });
+    </script>
+</body>
+</html>
