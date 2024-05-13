@@ -1,10 +1,10 @@
 from ipaddress import ip_address
 from django.http import HttpResponse
 from django.shortcuts import render
-from .serializers import RecipeSerializer,ProductSerializer,RecipeListSerializer,RecipeCreateSerializer
+from .serializers import ContactSerializer, RecipeSerializer,ProductSerializer,RecipeListSerializer,RecipeCreateSerializer
 from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import Recipe,Product
+from .models import Recipe,Product,Contact
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
@@ -12,6 +12,10 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
 from .forms import ContactForm
 from django.template.loader import render_to_string
+from rest_framework import status
+from rest_framework.views import APIView
+from.serializers import ContactSerializer
+
 
 
 #-------------------------------------------------------------------------------------------------for mail sending
@@ -58,6 +62,22 @@ def handle_contact(request):
         return render(request,'contact.html',{'form':form})  
         
         
+class ContactAPIView(APIView):
+    def post(self, request, format=None):
+        ip_address = get_client_ip(request)
+        serializer = ContactSerializer(data=request.data)
+        if serializer.is_valid():
+            contact = Contact.objects.create(**serializer.validated_data)
+            subject = "New Query at: Recipe app"
+            message = serializer.validated_data['query']
+            from_email = 'sujanrokka2000@gmail.com'
+            recipient_list = ['basnetshital14@gmail.com']
+            html_message = render_to_string('email.html', {'ip_address': ip_address, 'contact': contact}, request)
+
+            send_mail(subject, message, from_email, recipient_list, html_message=html_message)
+            return Response({"detail": "Email sent successfully!"}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"detail": "Invalid form data"}, status=status.HTTP_400_BAD_REQUEST)
         
 
 
