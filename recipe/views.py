@@ -1,3 +1,4 @@
+from ipaddress import ip_address
 from django.http import HttpResponse
 from django.shortcuts import render
 from .serializers import RecipeSerializer,ProductSerializer,RecipeListSerializer,RecipeCreateSerializer
@@ -9,8 +10,11 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.models import Token
+from .forms import ContactForm
+from django.template.loader import render_to_string
 
-#-------------------------------------------------------------------------------------------------for mail
+
+#-------------------------------------------------------------------------------------------------for mail sending
 from django.conf import settings
 from django.core.mail import send_mail
 
@@ -23,6 +27,7 @@ def get_client_ip(request):
     return ip
 
 def mail_user(request):
+    ip_address=get_client_ip(request)
     subject = 'welcome to GFG world'
     message = 'Hi  thank you for registering in geeksforgeeks.'
     html_message="<h1> welcome to our website</h1> <p>You have logged in from <strong>{ip_address} </strong> </p> <a href=\"google.com\" style=\"text-decoration:none; padding:10px; background-color:cyan;\">Visit </a>"
@@ -30,6 +35,30 @@ def mail_user(request):
     recipient_list = ['tiwarianimika2000@gmail.com']
     send_mail( subject, message,html_message=html_message,recipient_list=recipient_list,from_email=email_from )
     return HttpResponse()
+
+
+
+#for contact to admin
+def handle_contact(request):
+   if request.method == 'POST':
+        ip_address=get_client_ip(request)
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            contact= form.save()
+            subject="New query at : Recipe app"
+            message = request.POST.get('query')
+            from_email = 'sujanrokka2000@gmail.com'
+            recipient_list = ['tiwarianimika2000@gmail.com']
+            html_message=render_to_string('email.html',{'ip_address':ip_address,'contact':contact},request)
+            send_mail(subject, message, from_email, recipient_list,html_message=html_message)
+        return HttpResponse('Email sent successfully')
+  
+   else:  
+        form = ContactForm(request.POST)
+        return render(request,'contact.html',{'form':form})  
+        
+        
+        
 
 
 #------------------------------------------------------------------------------------------------------------
