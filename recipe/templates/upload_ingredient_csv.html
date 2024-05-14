@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Document</title>
+
+    </head>
+    <body>
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for ="ingredient_file">ingredient_file:</label>
+            <input type="file" name="ingredient_file" id="ingredient_file">
+            <input type="submit" value="submit">
+        </form>
+    </body>
+</html>

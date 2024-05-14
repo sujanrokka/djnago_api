@@ -6,6 +6,8 @@ class Ingredient(models.Model):
     name=models.CharField(max_length=23)
     def __str__(self):
         return self.name
+    
+    
 class Recipe(models.Model):
     title=models.CharField(max_length=23)
     description=models.TextField()

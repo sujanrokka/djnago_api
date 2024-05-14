@@ -4,7 +4,7 @@ from django.shortcuts import render
 from .serializers import ContactSerializer, RecipeSerializer,ProductSerializer,RecipeListSerializer,RecipeCreateSerializer
 from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import Recipe,Product,Contact
+from .models import Recipe,Product,Contact,Ingredient
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
@@ -15,9 +15,29 @@ from django.template.loader import render_to_string
 from rest_framework import status
 from rest_framework.views import APIView
 from.serializers import ContactSerializer
+import csv
 
 
 
+
+
+#for csv file uplaod
+def upload_ingredient_csv(request):
+    if request.method == 'POST':
+        ingredient_file = request.FILES['ingredient_file']
+        decoded_file = ingredient_file.read().decode('utf-8').splitlines()
+        # for line in decoded_file:
+        #     print(line)
+        reader=csv.DictReader(decoded_file)
+        for row in reader:
+            print(row['Name'])
+            Ingredient.objects.create(name=row['Name'])
+        return HttpResponse("file uploaded")
+    return render(request,'upload_ingredient_csv.html')
+            
+        
+    
+ 
 #-------------------------------------------------------------------------------------------------for mail sending
 from django.conf import settings
 from django.core.mail import send_mail
@@ -61,17 +81,19 @@ def handle_contact(request):
         form = ContactForm(request.POST)
         return render(request,'contact.html',{'form':form})  
         
-        
+ 
+ #api for contact us-----------------------------------------------------------------------------------------------------------------------------       
 class ContactAPIView(APIView):
     def post(self, request, format=None):
         ip_address = get_client_ip(request)
         serializer = ContactSerializer(data=request.data)
         if serializer.is_valid():
+            print(serializer.validated_data)
             contact = Contact.objects.create(**serializer.validated_data)
             subject = "New Query at: Recipe app"
             message = serializer.validated_data['query']
             from_email = 'sujanrokka2000@gmail.com'
-            recipient_list = ['basnetshital14@gmail.com']
+            recipient_list = ['tiwarianimika2000@gmail.com']
             html_message = render_to_string('email.html', {'ip_address': ip_address, 'contact': contact}, request)
 
             send_mail(subject, message, from_email, recipient_list, html_message=html_message)
@@ -81,7 +103,7 @@ class ContactAPIView(APIView):
         
 
 
-#------------------------------------------------------------------------------------------------------------
+#----Yo view set use garera-------------------------------------------------------------------------------------------------------------------------
 class RecipeViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated]
     queryset=Recipe.objects.all()
@@ -92,7 +114,7 @@ class ProductViewSet(ModelViewSet):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer 
     
-#-----------------------------------------------------------------------------------------------------------------
+#---------------------YO class based views use garera--------------------------------------------------------------------------------------------
   
 class RecipeListView(APIView):
     permission_classes=[IsAuthenticated]
@@ -145,8 +167,6 @@ class RecipeDetailView(APIView):
         return Response(status=204) 
     
     
-
-    
     
      
 class RecipeUpdateView(APIView):
@@ -172,7 +192,9 @@ class RecipeUpdateView(APIView):
 
 
     
-
+    
+    
+#----------------------------------yo function based views api use garera-------------------------------------------------
 # we can do this way also
 @api_view()
 @permission_classes([IsAuthenticated])
@@ -181,7 +203,6 @@ def hello(request):
     return Response({"data": "Hello, world!"})
 
 
- 
 
 @api_view(['GET','POST'])
 @permission_classes([IsAuthenticated])
@@ -206,8 +227,6 @@ def list_recipe(request):
     recipes=Recipe.objects.all()
     serializer=RecipeSerializer(recipes,many=True)
     return Response(serializer.data,status=201)
-
-
 
 
 
@@ -243,8 +262,6 @@ def recipe_detail(request,id):
   
   
   
-  
-
 @api_view(['GET','POST'])        
 def list_product(request):
     if request.method=='POST':
