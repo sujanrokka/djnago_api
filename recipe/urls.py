@@ -22,5 +22,8 @@ urlpatterns = [
     path('send_mail/',views.mail_user),
     path('contact/',views.handle_contact),
     path('contacts/', views.ContactAPIView.as_view(), name='contact_api'),
-    path("uplosdcsv/",views.upload_ingredient_csv,name='upload'),
+    path("uploadcsv/",views.upload_ingredient_csv,name='upload'),
+    path("downloadrcsv/",views.export_recipe,name='download'),
+    path('dashboard/',views.dashboard,name="dashboard"),
+    
 ]

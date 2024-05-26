@@ -16,8 +16,23 @@ from rest_framework import status
 from rest_framework.views import APIView
 from.serializers import ContactSerializer
 import csv
+from .resources import RecipeResources
+import datetime
 
 
+
+def dashboard(request):
+    return render(request,'starter.html',)
+
+#------user le download garna csv--------------------------------------------------------------------------------------------------------------------------
+def export_recipe(request):
+    recipes=Recipe.objects.filter(user=request.user)
+    recipe_data=RecipeResources()
+    dataset=recipe_data.export(recipes)
+    date=datetime.datetime.now()
+    response=HttpResponse(dataset.csv,content_type="text/csv")
+    response['Content-Disposition']=f'attachment; filename="recipes-{date}.csv"'
+    return response
 
 
 
@@ -38,7 +53,7 @@ def upload_ingredient_csv(request):
         
     
  
-#-------------------------------------------------------------------------------------------------for mail sending
+#-------------------------------------------------------------------------------------------------for mail sending-------------------
 from django.conf import settings
 from django.core.mail import send_mail
 
@@ -52,7 +67,7 @@ def get_client_ip(request):
 
 def mail_user(request):
     ip_address=get_client_ip(request)
-    subject = 'welcome to GFG world'
+    subject = 'mail aayo mail'
     message = 'Hi  thank you for registering in geeksforgeeks.'
     html_message="<h1> welcome to our website</h1> <p>You have logged in from <strong>{ip_address} </strong> </p> <a href=\"google.com\" style=\"text-decoration:none; padding:10px; background-color:cyan;\">Visit </a>"
     email_from = settings.EMAIL_HOST_USER
